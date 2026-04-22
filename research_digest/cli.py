@@ -35,16 +35,16 @@ def default_config() -> dict:
             "sort_order": "descending",
         },
         "feeds": [
-            {"name": "OpenAI Blog", "url": "https://openai.com/blog/rss.xml"},
-            {"name": "Google AI Blog", "url": "https://ai.googleblog.com/feeds/posts/default"},
+            {"name": "OpenAI News", "url": "https://openai.com/news/rss.xml"},
             {"name": "Distill", "url": "https://distill.pub/rss.xml"},
+            {"name": "HN Newest", "url": "https://hnrss.org/newest"},
         ],
         "output": {
             "directory": str(Path.home() / "workspace/research-digest/digests"),
             "filename": "digest_{date}.md",
         },
         "summarizer": {
-            "model": "llama3.2:latest",
+            "model": "kimi-k2.6:cloud",
             "enabled": True,
         },
     }

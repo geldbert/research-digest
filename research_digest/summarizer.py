@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import textwrap
 import urllib.request
 from dataclasses import dataclass
@@ -15,10 +16,10 @@ class Summary:
     relevance: str  # one-sentence why it matters
 
 
-OLLAMA_HOST = "http://localhost:11434"
+OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
 
 
-def _chat(prompt: str, model: str = "llama3.2:latest", timeout: int = 60) -> str:
+def _chat(prompt: str, model: str = "kimi-k2.6:cloud", timeout: int = 60) -> str:
     """Send a prompt to Ollama and return the response text."""
     payload = json.dumps(
         {
@@ -47,7 +48,7 @@ def _chat(prompt: str, model: str = "llama3.2:latest", timeout: int = 60) -> str
     return data.get("message", {}).get("content", "")
 
 
-def summarize_paper(title: str, abstract: str, model: str = "llama3.2:latest") -> Summary:
+def summarize_paper(title: str, abstract: str, model: str = "kimi-k2.6:cloud") -> Summary:
     """Generate a structured summary for an academic paper."""
     prompt = textwrap.dedent(
         f"""\
@@ -67,7 +68,7 @@ def summarize_paper(title: str, abstract: str, model: str = "llama3.2:latest") -
     return _parse_summary(text)
 
 
-def summarize_article(title: str, text_body: str, model: str = "llama3.2:latest") -> Summary:
+def summarize_article(title: str, text_body: str, model: str = "kimi-k2.6:cloud") -> Summary:
     """Generate a structured summary for a blog/news article."""
     prompt = textwrap.dedent(
         f"""\
