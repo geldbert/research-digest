@@ -115,7 +115,7 @@ def main(argv: list[str] | None = None) -> int:
 
     cfg = load_config(args.config)
     summarizer_enabled = cfg.get("summarizer", {}).get("enabled", True) and not args.no_summarize
-    model = args.model or cfg.get("summarizer", {}).get("model", "llama3.2:latest")
+    model = args.model or cfg.get("summarizer", {}).get("model", "kimi-k2.6:cloud")
 
     # Fetch arXiv papers
     papers = []
