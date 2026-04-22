@@ -1,6 +1,7 @@
 """Fetch and parse arXiv papers using only stdlib + urllib."""
 from __future__ import annotations
 
+import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass

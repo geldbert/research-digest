@@ -50,7 +50,7 @@ Create `~/.config/research-digest/config.json`:
     "sort_order": "descending"
   },
   "feeds": [
-    {"name": "OpenAI Blog", "url": "https://openai.com/blog/rss.xml"},
+    {"name": "OpenAI News", "url": "https://openai.com/news/rss.xml"},
     {"name": "Distill", "url": "https://distill.pub/rss.xml"}
   ],
   "output": {
@@ -58,7 +58,7 @@ Create `~/.config/research-digest/config.json`:
     "filename": "digest_{date}.md"
   },
   "summarizer": {
-    "model": "llama3.2:latest",
+    "model": "kimi-k2.6:cloud",
     "enabled": true
   }
 }

@@ -109,7 +109,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--version",
         action="version",
-        version="%(prog)s 0.1.0",
+        version=f"%(prog)s {__import__('research_digest').__version__}",
     )
     args = parser.parse_args(argv)
 
