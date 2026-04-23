@@ -13,7 +13,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from research_digest.arxiv_client import fetch_papers
 from research_digest.rss_client import fetch_feed
-from research_digest.summarizer import summarize_paper, summarize_article
+from research_digest.web_search import fetch_web_results, fetch_trending_in_tech
+from research_digest.summarizer import summarize_paper, summarize_article, summarize_web_result
 from research_digest.digest import render_digest, save_digest
 
 
@@ -46,6 +47,11 @@ def default_config() -> dict:
         "summarizer": {
             "model": "kimi-k2.6:cloud",
             "enabled": True,
+        },
+        "web_search": {
+            "enabled": False,
+            "query": "latest AI research 2026",
+            "max_results": 5,
         },
     }
 
@@ -90,6 +96,22 @@ def main(argv: list[str] | None = None) -> int:
         "-m",
         default="",
         help="Override Ollama model name",
+    )
+    parser.add_argument(
+        "--web-search",
+        action="store_true",
+        help="Include web search results (DDGS)",
+    )
+    parser.add_argument(
+        "--web-query",
+        default="",
+        help="Override web search query",
+    )
+    parser.add_argument(
+        "--web-results",
+        type=int,
+        default=0,
+        help="Override max web results",
     )
     parser.add_argument(
         "--feeds-only",
@@ -147,9 +169,22 @@ def main(argv: list[str] | None = None) -> int:
             except Exception as e:
                 print(f"  ✗ RSS fetch failed: {e}", file=sys.stderr)
 
+    # Fetch web search
+    web_results = []
+    if args.web_search or cfg.get("web_search", {}).get("enabled", False):
+        wq = args.web_query or cfg.get("web_search", {}).get("query", "latest AI research 2026")
+        wr = args.web_results or cfg.get("web_search", {}).get("max_results", 5)
+        print(f"Fetching web: {wq} (max {wr}) ...", file=sys.stderr)
+        try:
+            web_results = fetch_web_results(wq, wr)
+            print(f"  → {len(web_results)} results", file=sys.stderr)
+        except Exception as e:
+            print(f"  ✗ Web search failed: {e}", file=sys.stderr)
+
     # Summarize
     paper_summaries = []
     article_summaries = []
+    web_summaries = []
     if summarizer_enabled:
         for p in papers:
             try:
@@ -171,6 +206,16 @@ def main(argv: list[str] | None = None) -> int:
                 article_summaries.append(
                     Summary(headline=a.title, key_points=[a.summary[:200]], relevance="See article.")
                 )
+        for w in web_results:
+            try:
+                s = summarize_web_result(w.title, w.body, model=model)
+                web_summaries.append(s)
+            except Exception as e:
+                print(f"  ✗ Summarize web result failed: {e}", file=sys.stderr)
+                from research_digest.summarizer import Summary
+                web_summaries.append(
+                    Summary(headline=w.title, key_points=[w.body[:200]], relevance="See source.")
+                )
     else:
         from research_digest.summarizer import Summary
         for p in papers:
@@ -181,9 +226,13 @@ def main(argv: list[str] | None = None) -> int:
             article_summaries.append(
                 Summary(headline=a.title, key_points=[a.summary[:200]], relevance="See article.")
             )
+        for w in web_results:
+            web_summaries.append(
+                Summary(headline=w.title, key_points=[w.body[:200]], relevance="See source.")
+            )
 
     # Render & save
-    md = render_digest(papers, articles, paper_summaries, article_summaries, date=args.date)
+    md = render_digest(papers, articles, web_results, paper_summaries, article_summaries, web_summaries, date=args.date)
     out_dir = Path(args.output or cfg["output"]["directory"])
     fname = cfg["output"]["filename"].format(date=args.date)
     out_path = out_dir / fname

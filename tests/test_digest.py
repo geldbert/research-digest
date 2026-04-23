@@ -6,15 +6,21 @@ from research_digest.digest import render_digest, save_digest
 from research_digest.arxiv_client import Paper
 from research_digest.rss_client import Article
 from research_digest.summarizer import Summary
+from research_digest.web_search import WebResult
 
 
 class TestDigestRender(unittest.TestCase):
     def test_render_empty(self):
-        md = render_digest([], [], [], [], title="Test", date="2026-04-22")
+        md = render_digest(
+            [], [], [],
+            [], [], [],
+            title="Test", date="2026-04-22",
+        )
         self.assertIn("# Test", md)
         self.assertIn("2026-04-22", md)
         self.assertIn("No papers fetched", md)
         self.assertIn("No articles fetched", md)
+        self.assertIn("No web results fetched", md)
 
     def test_render_with_content(self):
         papers = [
@@ -37,10 +43,22 @@ class TestDigestRender(unittest.TestCase):
                 feed_name="Ex",
             )
         ]
+        web_results = [
+            WebResult(
+                title="Web News",
+                href="https://example.com/news",
+                body="News snippet.",
+                source="web",
+            )
+        ]
         summaries = [Summary(headline="HL", key_points=["K1"], relevance="R")]
-        md = render_digest(papers, articles, summaries, summaries)
+        md = render_digest(
+            papers, articles, web_results,
+            summaries, summaries, summaries,
+        )
         self.assertIn("Test Paper", md)
         self.assertIn("Blog Post", md)
+        self.assertIn("Web News", md)
         self.assertIn("HL", md)
         self.assertIn("K1", md)
 

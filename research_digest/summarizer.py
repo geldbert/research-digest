@@ -1,4 +1,4 @@
-"""Summarize paper abstracts and article summaries via local Ollama LLM."""
+"""Summarize paper abstracts, article summaries, and web results via local Ollama LLM."""
 from __future__ import annotations
 
 import json
@@ -81,6 +81,25 @@ def summarize_article(title: str, text_body: str, model: str = "kimi-k2.6:cloud"
         - Bullet 1
         - Bullet 2
         - Bullet 3
+        RELEVANCE: One sentence on why this matters.
+        """
+    )
+    text = _chat(prompt, model=model)
+    return _parse_summary(text)
+
+
+def summarize_web_result(title: str, snippet: str, model: str = "kimi-k2.6:cloud") -> Summary:
+    """Generate a structured summary for a web search result snippet."""
+    prompt = textwrap.dedent(
+        f"""\
+        Title: {title}
+        Snippet: {snippet[:4000]}
+
+        Summarize this source in the following format:
+        HEADLINE: One sentence headline.
+        KEY POINTS:
+        - Bullet 1
+        - Bullet 2
         RELEVANCE: One sentence on why this matters.
         """
     )

@@ -4,6 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import List
 
+from research_digest.web_search import WebResult
 from research_digest.arxiv_client import Paper
 from research_digest.rss_client import Article
 from research_digest.summarizer import Summary
@@ -12,8 +13,10 @@ from research_digest.summarizer import Summary
 def render_digest(
     papers: List[Paper],
     articles: List[Article],
+    web_results: List[WebResult],
     paper_summaries: List[Summary],
     article_summaries: List[Summary],
+    web_summaries: List[Summary],
     title: str = "Research Digest",
     date: str = "",
 ) -> str:
@@ -59,6 +62,26 @@ def render_digest(
         lines.append(f"- **Link:** [{a.link}]({a.link})")
         if a.authors:
             lines.append(f"- **Authors:** {', '.join(a.authors)}")
+        lines.append("")
+        lines.append(f"**{s.headline}**")
+        lines.append("")
+        for pt in s.key_points:
+            lines.append(f"- {pt}")
+        lines.append("")
+        lines.append(f"_Relevance:_ {s.relevance}")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
+
+    lines.append("## Web Search Highlights")
+    lines.append("")
+    if not web_results:
+        lines.append("_No web results fetched._")
+        lines.append("")
+    for i, (w, s) in enumerate(zip(web_results, web_summaries), 1):
+        lines.append(f"### {i}. {w.title}")
+        lines.append(f"- **Link:** [{w.href}]({w.href})")
+        lines.append(f"- **Source:** {w.source}")
         lines.append("")
         lines.append(f"**{s.headline}**")
         lines.append("")

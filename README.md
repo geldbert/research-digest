@@ -7,6 +7,7 @@ Generate curated research digests from **arXiv** and **RSS feeds** using only Py
 - **arXiv search** — Query any arXiv category or keyword; fetch latest papers via the free REST API.
 - **RSS/Atom feeds** — Poll any number of feeds and aggregate articles.
 - **Local LLM summaries** — Optional summarization via [Ollama](https://ollama.com/) (zero external API keys).
+- **Web search** — Optional DuckDuckGo web search (zero API keys).
 - **Pure stdlib** — No pip dependencies beyond Python itself.
 - **Markdown output** — Clean, shareable `.md` files.
 
@@ -66,9 +67,10 @@ Create `~/.config/research-digest/config.json`:
 
 ## CLI Options
 
-```
+```bash
 research-digest [-c CONFIG] [-o DIR] [-q QUERY] [-n N]
                 [--no-summarize] [--feeds-only] [--arxiv-only]
+                [--web-search] [--web-query QUERY] [--web-results N]
                 [-m MODEL] [--date DATE] [--version]
 ```
 
@@ -81,6 +83,9 @@ research-digest [-c CONFIG] [-o DIR] [-q QUERY] [-n N]
 | `--no-summarize` | Skip LLM (raw abstracts) |
 | `--feeds-only` | Skip arXiv, RSS only |
 | `--arxiv-only` | Skip RSS, arXiv only |
+| `--web-search` | Include DuckDuckGo web results |
+| `--web-query` | Override search query |
+| `--web-results` | Max web results |
 | `-m, --model` | Ollama model name |
 | `--date` | Date stamp for filename |
 | `--version` | Show version |
