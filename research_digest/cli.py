@@ -37,9 +37,12 @@ def default_config() -> dict:
         },
         "feeds": [
             {"name": "OpenAI News", "url": "https://openai.com/news/rss.xml"},
-            {"name": "Distill", "url": "https://distill.pub/rss.xml"},
+            {"name": "Google Research", "url": "https://blog.research.google/feeds/posts/default"},
             {"name": "HN Newest", "url": "https://hnrss.org/newest"},
         ],
+        "feed_limits": {
+            "max_articles_per_feed": 15,
+        },
         "output": {
             "directory": str(Path.home() / "workspace/research-digest/digests"),
             "filename": "digest_{date}.md",
@@ -164,6 +167,9 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Fetching RSS: {name} ...", file=sys.stderr)
             try:
                 arts = fetch_feed(url, name)
+                max_arts = cfg.get("feed_limits", {}).get("max_articles_per_feed")
+                if max_arts is not None and len(arts) > max_arts:
+                    arts = arts[:max_arts]
                 print(f"  → {len(arts)} articles", file=sys.stderr)
                 articles.extend(arts)
             except Exception as e:
