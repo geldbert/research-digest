@@ -4,6 +4,8 @@ from __future__ import annotations
 import urllib.request
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
+from datetime import datetime
+from email.utils import parsedate_to_datetime
 from typing import List, Optional
 
 
@@ -41,6 +43,26 @@ def fetch_feed(url: str, feed_name: str = "", timeout: int = 15) -> List[Article
     return atom if atom else _parse_rss(root, feed_name)
 
 
+def _format_date(raw: str) -> str:
+    """Try to normalize RSS/Atom dates to YYYY-MM-DD."""
+    raw = raw.strip()
+    # Try ISO-8601 first (Atom)
+    for fmt in ("%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(raw[:19], fmt).strftime("%Y-%m-%d")
+        except ValueError:
+            pass
+    # Try RFC 2822 (RSS pubDate)
+    try:
+        return parsedate_to_datetime(raw).strftime("%Y-%m-%d")
+    except Exception:
+        pass
+    # Fallback: just return first 10 chars if it looks like a date
+    if len(raw) >= 10 and raw[4] == "-" and raw[7] == "-":
+        return raw[:10]
+    return raw[:10]
+
+
 def _parse_atom(root: ET.Element, feed_name: str) -> List[Article]:
     ns = {"a": _NS_MAP["atom"]}
     articles: List[Article] = []
@@ -63,7 +85,7 @@ def _parse_atom(root: ET.Element, feed_name: str) -> List[Article]:
                 title=title.strip().replace("\n", " ") if title else "Untitled",
                 link=link,
                 summary=summary.strip() if summary else "",
-                published=published[:10] if published else "",
+                published=_format_date(published) if published else "",
                 authors=authors,
                 feed_name=feed_name,
             )
@@ -89,7 +111,7 @@ def _parse_rss(root: ET.Element, feed_name: str) -> List[Article]:
                 title=title.strip().replace("\n", " ") if title else "Untitled",
                 link=link,
                 summary=summary.strip() if summary else "",
-                published=pubdate[:10] if pubdate else "",
+                published=_format_date(pubdate) if pubdate else "",
                 authors=[],
                 feed_name=feed_name,
             )
