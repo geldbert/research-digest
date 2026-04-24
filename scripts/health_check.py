@@ -64,6 +64,19 @@ def check_feeds(cfg):
             req = urllib.request.Request(url, headers={"User-Agent": "research-digest/health-check"}, method="HEAD")
             with urllib.request.urlopen(req, timeout=10) as resp:
                 results[url] = (True, resp.status)
+        except urllib.error.HTTPError as exc:
+            if exc.code == 405:
+                # Retry with GET; HEAD not supported
+                try:
+                    req2 = urllib.request.Request(url, headers={"User-Agent": "research-digest/health-check"})
+                    with urllib.request.urlopen(req2, timeout=10) as resp:
+                        results[url] = (True, resp.status)
+                except Exception as exc2:
+                    results[url] = (False, str(exc2)[:60])
+                    all_ok = False
+            else:
+                results[url] = (False, str(exc)[:60])
+                all_ok = False
         except Exception as exc:
             results[url] = (False, str(exc)[:60])
             all_ok = False

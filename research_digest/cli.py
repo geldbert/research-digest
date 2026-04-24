@@ -38,7 +38,7 @@ def default_config() -> dict:
         "feeds": [
             {"name": "OpenAI News", "url": "https://openai.com/news/rss.xml"},
             {"name": "Google Research", "url": "http://feeds.feedburner.com/blogspot/gJZg"},
-            {"name": "HN Newest", "url": "https://hnrss.org/newest"},
+            {"name": "HN Newest", "url": "https://news.ycombinator.com/rss"},
         ],
         "feed_limits": {
             "max_articles_per_feed": 15,
