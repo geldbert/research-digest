@@ -56,8 +56,8 @@ def rotate(digests_dir: Path, keep_days: int, archive_dir: Path | None, delete: 
             continue
 
         try:
+            size = child.stat().st_size
             if delete:
-                size = child.stat().st_size
                 child.unlink()
                 processed["deleted"] += 1
                 processed["bytes_freed"] += size
@@ -66,7 +66,7 @@ def rotate(digests_dir: Path, keep_days: int, archive_dir: Path | None, delete: 
                 dest = archive_dir / child.name
                 shutil.move(str(child), str(dest))
                 processed["archived"] += 1
-                processed["bytes_freed"] += child.stat().st_size
+                processed["bytes_freed"] += size
         except Exception as exc:
             processed["errors"].append(f"{child.name}: {exc}")
 
