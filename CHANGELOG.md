@@ -1,8 +1,14 @@
 # Changelog
 
-## 0.1.1 — 2026-04-22
+## [0.1.3] - 2026-04-23
 ### Fixed
-- README default feed URL corrected to `https://openai.com/news/rss.xml`
+- Normalize RSS/Atom article dates to YYYY-MM-DD (was rendering truncated RFC 2822 dates like "Thu, 23 Ap")
+### Infrastructure
+- Verified wheel and sdist build pipeline; all 11 tests pass with stdlib only
+
+## [0.1.2] - 2026-04-22
+### Fixed
+- Google Research RSS feed URL updated to stable feedburner endpoint (avoids 302 redirect loop)
 - README default model corrected to `kimi-k2.6:cloud`
 - Added missing `urllib.parse` import in `arxiv_client.py`
 - Version synced across `__init__.py`, `pyproject.toml`, and `setup.py`
