@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="research-digest",
-    version="0.1.3",
+    version="0.1.4",
     author="geldbert",
     description="Generate curated research digests from arXiv and RSS feeds.",
     long_description=open("README.md").read(),
