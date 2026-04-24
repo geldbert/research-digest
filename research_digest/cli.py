@@ -37,7 +37,7 @@ def default_config() -> dict:
         },
         "feeds": [
             {"name": "OpenAI News", "url": "https://openai.com/news/rss.xml"},
-            {"name": "Google Research", "url": "https://blog.research.google/feeds/posts/default"},
+            {"name": "Google Research", "url": "http://feeds.feedburner.com/blogspot/gJZg"},
             {"name": "HN Newest", "url": "https://hnrss.org/newest"},
         ],
         "feed_limits": {
