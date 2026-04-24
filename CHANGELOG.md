@@ -26,3 +26,8 @@
 - Markdown digest generation
 - CLI with argparse (`--arxiv-only`, `--feeds-only`, `--no-summarize`, etc.)
 - 7 unit tests
+
+## [0.1.3] - 2026-04-23
+### Fixed
+- Normalize RSS/Atom article dates to YYYY-MM-DD
+- Build verified: wheel + sdist OK
