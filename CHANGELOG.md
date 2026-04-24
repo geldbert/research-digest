@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.1.6] — 2026-04-25
+### Added
+- `scripts/rotate_digests.py` — archive or purge old digest files older than `--keep-days` (default 7)
+- `tests/test_rotate_digests.py` — 5 unit tests covering archive, delete, dry-run, keep-recent, empty dirs
+
+### Fixed
+- Corrected `bytes_freed` calculation when using shutil.move (stat after move returns zero bytes)
+
+### Changed
+- Test suite expanded from 15 → 20 tests (all pass in <0.015s)
+
 ## [0.1.5] — 2026-04-24
 ### Fixed
 - CHANGELOG deduplicated and corrected ordering
