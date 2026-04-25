@@ -136,7 +136,22 @@ def main(argv: list[str] | None = None) -> int:
         action="version",
         version=f"%(prog)s {__import__('research_digest').__version__}",
     )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Render and print digest to stdout without writing to file",
+    )
+    parser.add_argument(
+        "--quiet",
+        "-Q",
+        action="store_true",
+        help="Suppress all progress output",
+    )
     args = parser.parse_args(argv)
+
+    def _log(msg: str) -> None:
+        if not args.quiet:
+            print(msg, file=sys.stderr)
 
     cfg = load_config(args.config)
     summarizer_enabled = cfg.get("summarizer", {}).get("enabled", True) and not args.no_summarize
@@ -149,12 +164,12 @@ def main(argv: list[str] | None = None) -> int:
         n = args.max_results or cfg["arxiv"]["max_results"]
         sort_by = cfg["arxiv"]["sort_by"]
         sort_order = cfg["arxiv"]["sort_order"]
-        print(f"Fetching arXiv: {aq} (max {n}) ...", file=sys.stderr)
+        _log(f"Fetching arXiv: {aq} (max {n}) ...")
         try:
             papers = fetch_papers(aq, n, sort_by, sort_order)
-            print(f"  → {len(papers)} papers", file=sys.stderr)
+            _log(f"  → {len(papers)} papers")
         except Exception as e:
-            print(f"  ✗ arXiv fetch failed: {e}", file=sys.stderr)
+            _log(f"  ✗ arXiv fetch failed: {e}")
 
     # Fetch RSS feeds
     articles = []
@@ -164,28 +179,28 @@ def main(argv: list[str] | None = None) -> int:
             url = feed.get("url", "")
             if not url:
                 continue
-            print(f"Fetching RSS: {name} ...", file=sys.stderr)
+            _log(f"Fetching RSS: {name} ...")
             try:
                 arts = fetch_feed(url, name)
                 max_arts = cfg.get("feed_limits", {}).get("max_articles_per_feed")
                 if max_arts is not None and len(arts) > max_arts:
                     arts = arts[:max_arts]
-                print(f"  → {len(arts)} articles", file=sys.stderr)
+                _log(f"  → {len(arts)} articles")
                 articles.extend(arts)
             except Exception as e:
-                print(f"  ✗ RSS fetch failed: {e}", file=sys.stderr)
+                _log(f"  ✗ RSS fetch failed: {e}")
 
     # Fetch web search
     web_results = []
     if args.web_search or cfg.get("web_search", {}).get("enabled", False):
         wq = args.web_query or cfg.get("web_search", {}).get("query", "latest AI research 2026")
         wr = args.web_results or cfg.get("web_search", {}).get("max_results", 5)
-        print(f"Fetching web: {wq} (max {wr}) ...", file=sys.stderr)
+        _log(f"Fetching web: {wq} (max {wr}) ...")
         try:
             web_results = fetch_web_results(wq, wr)
-            print(f"  → {len(web_results)} results", file=sys.stderr)
+            _log(f"  → {len(web_results)} results")
         except Exception as e:
-            print(f"  ✗ Web search failed: {e}", file=sys.stderr)
+            _log(f"  ✗ Web search failed: {e}")
 
     # Summarize
     paper_summaries = []
@@ -242,11 +257,15 @@ def main(argv: list[str] | None = None) -> int:
     out_dir = Path(args.output or cfg["output"]["directory"])
     fname = cfg["output"]["filename"].format(date=args.date)
     out_path = out_dir / fname
+    if args.dry_run:
+        _log(f"\nDigest (dry-run, would write to {out_path}):")
+        print(md)
+        return 0
     try:
         save_digest(md, out_path)
-        print(f"\nDigest written to {out_path}", file=sys.stderr)
+        _log(f"\nDigest written to {out_path}")
     except Exception as e:
-        print(f"\nFailed to write digest: {e}", file=sys.stderr)
+        _log(f"\nFailed to write digest: {e}")
         print(md)
         return 1
 

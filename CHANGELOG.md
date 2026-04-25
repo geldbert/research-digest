@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.8] — 2026-04-25
+### Added
+- `--dry-run` flag: renders digest to stdout without writing to file (safe cron testing)
+- `--quiet`/`-Q` flag: suppresses all progress output (clean cron logs)
+- `tests/test_cli.py` — 4 unit tests covering `--dry-run`, `--quiet`, and config loading
+
+### Changed
+- Test suite expanded from 26 → 31 tests (all pass in <0.025s)
+
 ## [0.1.7] — 2026-04-25
 ### Added
 - `scripts/rotate_reports.py` — archive or purge old cycle reports older than `--keep-days` (default 30)
