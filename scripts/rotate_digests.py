@@ -27,10 +27,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--archive-dir", default=os.getenv("ARCHIVE_DIR", ""))
     p.add_argument("--delete", action="store_true", help="Delete instead of archive")
     p.add_argument("--dry-run", action="store_true", help="Show what would be done")
+    p.add_argument("--quiet", "-q", action="store_true", help="Suppress non-error output")
     return p.parse_args(argv)
 
 
-def rotate(digests_dir: Path, keep_days: int, archive_dir: Path | None, delete: bool, dry_run: bool) -> dict:
+def rotate(digests_dir: Path, keep_days: int, archive_dir: Path | None, delete: bool, dry_run: bool, quiet: bool = False) -> dict:
     cutoff = datetime.now(timezone.utc) - timedelta(days=keep_days)
     processed = {"archived": 0, "deleted": 0, "bytes_freed": 0, "errors": []}
 
@@ -49,7 +50,8 @@ def rotate(digests_dir: Path, keep_days: int, archive_dir: Path | None, delete: 
 
         action = "delete" if delete else "archive"
         if dry_run:
-            print(f"[dry-run] Would {action}: {child.name}")
+            if not quiet:
+                print(f"[dry-run] Would {action}: {child.name}")
             processed["archived"] += 0 if delete else 1
             processed["deleted"] += 1 if delete else 0
             processed["bytes_freed"] += child.stat().st_size
@@ -84,8 +86,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.archive_dir:
         archive_dir = Path(args.archive_dir).expanduser().resolve()
 
-    result = rotate(digests_dir, args.keep_days, archive_dir, args.delete, args.dry_run)
-    print(f"Rotation complete: {result}")
+    result = rotate(digests_dir, args.keep_days, archive_dir, args.delete, args.dry_run, args.quiet)
+    if not args.quiet:
+        print(f"Rotation complete: {result}")
     return 0
 
 
