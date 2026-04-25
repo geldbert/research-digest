@@ -38,7 +38,7 @@ def fetch_papers(
         f"&sortBy={sort_by}"
         f"&sortOrder={sort_order}"
     )
-    req = urllib.request.Request(url, headers={"User-Agent": "research-digest/0.1.6"})
+    req = urllib.request.Request(url, headers={"User-Agent": "research-digest/0.1.7"})
     with urllib.request.urlopen(req, timeout=20) as resp:
         data = resp.read()
 

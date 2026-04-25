@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.7] — 2026-04-25
+### Added
+- `scripts/rotate_reports.py` — archive or purge old cycle reports older than `--keep-days` (default 30)
+- `tests/test_rotate_reports.py` — 6 unit tests covering archive, delete, dry-run, keep-recent, empty dirs, bytes-freed
+
+### Changed
+- Version bump 0.1.6 → 0.1.7 with full sync across all version strings
+- Test suite expanded from 20 → 26 tests (all pass in <0.02s)
+
 ## [0.1.6] — 2026-04-25
 ### Added
 - `scripts/rotate_digests.py` — archive or purge old digest files older than `--keep-days` (default 7)

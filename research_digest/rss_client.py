@@ -29,7 +29,7 @@ _NS_MAP = {
 
 def fetch_feed(url: str, feed_name: str = "", timeout: int = 15) -> List[Article]:
     """Fetch an RSS or Atom feed and return articles."""
-    req = urllib.request.Request(url, headers={"User-Agent": "research-digest/0.1.6"})
+    req = urllib.request.Request(url, headers={"User-Agent": "research-digest/0.1.7"})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         data = resp.read()
     root = ET.fromstring(data)
