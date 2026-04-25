@@ -15,3 +15,4 @@ digests/
 *~
 .DS_Store
 health_report.json
+test_install/

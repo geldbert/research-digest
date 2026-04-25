@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """rotate_digests.py — Archive or purge old digest files to keep digests/ bounded.
 
 Usage:

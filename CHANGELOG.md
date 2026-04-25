@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.9] — 2026-04-25
+### Fixed
+- Added missing `#!/usr/bin/env python3` shebangs to `scripts/rotate_digests.py` and `scripts/rotate_reports.py`
+- Added executable `chmod +x` to all scripts (`rotate_digests.py`, `rotate_reports.py`, `search_arxiv.py`, `health_check.py`)
+- Added `test_install/` to `.gitignore` to prevent stale venv artifacts
+- Synced version strings across 5 files (`__init__.py`, `setup.py`, `pyproject.toml`, `arxiv_client.py`, `rss_client.py`)
+
 ## [0.1.8] — 2026-04-25
 ### Added
 - `--dry-run` flag: renders digest to stdout without writing to file (safe cron testing)

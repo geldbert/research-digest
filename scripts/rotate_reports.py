@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Rotate old cycle reports to keep ~/.hermes/cron/output/ bounded.
 
 Usage:
