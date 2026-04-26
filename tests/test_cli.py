@@ -27,7 +27,7 @@ class TestCliFlags(unittest.TestCase):
         """--quiet should suppress progress output."""
         err = io.StringIO()
         with patch.object(sys, "stderr", err):
-            rc = main(["--quiet", "--no-summarize"])
+            rc = main(["--quiet", "--dry-run", "--no-summarize"])
         self.assertEqual(rc, 0)
         self.assertEqual(err.getvalue(), "")
 
