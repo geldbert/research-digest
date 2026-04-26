@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.10] — 2026-04-26
+### Maintenance
+- Version bump 0.1.9 → 0.1.10 across all 5 version strings
+- Rebuilt wheel + sdist with python3 -m build
+- Tagged v0.1.10 and pushed to origin
+
 ## [0.1.9] — 2026-04-25
 ### Fixed
 - Added missing `#!/usr/bin/env python3` shebangs to `scripts/rotate_digests.py` and `scripts/rotate_reports.py`
