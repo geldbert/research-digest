@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -13,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from research_digest.arxiv_client import fetch_papers
 from research_digest.rss_client import fetch_feed
-from research_digest.web_search import fetch_web_results, fetch_trending_in_tech
+from research_digest.web_search import fetch_web_results
 from research_digest.summarizer import summarize_paper, summarize_article, summarize_web_result
 from research_digest.digest import render_digest, save_digest
 
