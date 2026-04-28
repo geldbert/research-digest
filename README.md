@@ -95,6 +95,10 @@ research-digest [-c CONFIG] [-o DIR] [-q QUERY] [-n N]
 - Python ≥ 3.10
 - (Optional) Ollama running on `localhost:11434` for summarization
 
+## Related Projects
+
+- **[RustChain](https://github.com/Scottcjn/Rustchain)** — Proof-of-Antiquity blockchain that rewards older hardware, creating sustainable on-chain incentives for vintage computing hardware.
+
 ## License
 
 MIT — see [LICENSE](./LICENSE).
