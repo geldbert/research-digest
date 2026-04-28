@@ -48,7 +48,7 @@ def default_config() -> dict:
             "filename": "digest_{date}.md",
         },
         "summarizer": {
-            "model": "kimi-k2.6:cloud",
+            "model": "llama3.2:latest",
             "enabled": True,
         },
         "web_search": {
